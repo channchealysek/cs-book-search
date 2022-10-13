@@ -5,12 +5,6 @@ module.exports = gql`
     me: User
   }
 
-  input RegisterInput {
-    username: String!
-    email: String!
-    password: String!
-  }
-
   input BookInput {
     authors: [String]
     description: String!
@@ -29,8 +23,8 @@ module.exports = gql`
   }
 
   type Mutation {
-    login(email: String!, password: String!): Auth!
-    register(registerInput: RegisterInput): Auth!
+    login(email: String!, password: String!): Auth
+    addUser(username: String!, email: String!, password: String!): Auth
     saveBook(bookData: BookInput!): User
     removeBook(bookId: ID!): User
   }

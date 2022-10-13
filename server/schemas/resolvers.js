@@ -25,73 +25,27 @@ module.exports = {
     },
   },
   Mutation: {
-    register: async (_, { registerInput: { username, email, password } }) => {
-      // Validate user data
-      const { valid, errors } = validateRegisterInput(
-        username,
-        email,
-        password
-      );
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
-      // Make sure user doesn't already exist
-      const user = await User.findOne({ username });
-      if (user) {
-        throw new UserInputError("Username is taken", {
-          errors: {
-            username: "This username is taken",
-          },
-        });
-      }
+    addUser: async (parent, args) => {
+      const user = await User.create(args);
+      const token = signToken(user);
 
-      // hash password and create and auth token
-      const newUser = new User({
-        username,
-        email,
-        password,
-      });
-
-      const res = await newUser.save();
-
-      const token = signToken({ res });
-
-      return {
-        ...res._doc,
-        id: res._id,
-        username: res.username,
-        email: res.email,
-        token,
-      };
+      return { token, user };
     },
-    login: async (_, { email, password }) => {
-      const { errors, valid } = validateLoginInput(email, password);
-
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
+    login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        errors.general = "Email not found.";
-        throw new UserInputError("Incorrect credentials", { errors });
+        throw new AuthenticationError("Incorrect credentials");
       }
 
-      const match = await user.isCorrectPassword(password);
+      const correctPw = await user.isCorrectPassword(password);
 
-      if (!match) {
-        errors.general = "Wrong crendetials.";
-        throw new UserInputError("Wrong crendetials", { errors });
+      if (!correctPw) {
+        throw new AuthenticationError("Incorrect credentials");
       }
 
       const token = signToken(user);
-      return {
-        ...user._doc,
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        token,
-      };
+      return { token, user };
     },
     saveBook: async (parent, { bookData }, context) => {
       if (context.user) {
