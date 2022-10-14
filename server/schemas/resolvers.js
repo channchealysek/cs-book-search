@@ -1,35 +1,31 @@
-const {
-  AuthenticationError,
-  UserInputError,
-} = require("apollo-server-express");
+const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
-const {
-  validateRegisterInput,
-  validateLoginInput,
-} = require("../utils/validators");
 
 module.exports = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        try {
-          const userData = await User.findOne({ _id: context.user._id }).select(
-            "__v -password"
-          );
-          return userData;
-        } catch (err) {
-          throw new AuthenticationError("Not logged in");
-        }
+        const userData = await User.findOne({ _id: context.user._id })
+          .select("-__v -password")
+          .populate("books");
+
+        return userData;
       }
+
+      throw new AuthenticationError("Not logged in");
     },
   },
   Mutation: {
     addUser: async (parent, args) => {
-      const user = await User.create(args);
-      const token = signToken(user);
+      try {
+        const user = await User.create(args);
 
-      return { token, user };
+        const token = signToken(user);
+        return { token, user };
+      } catch (err) {
+        console.log(err);
+      }
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
@@ -47,12 +43,13 @@ module.exports = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, { bookData }, context) => {
+    saveBook: async (parent, args, context) => {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { savedBooks: bookData } },
-          { new: true }
+          // take the input type to replace "body" as the arguement
+          { $addToSet: { savedBooks: args.input } },
+          { new: true, runValidators: true }
         );
 
         return updatedUser;
@@ -60,11 +57,11 @@ module.exports = {
 
       throw new AuthenticationError("You need to be logged in!");
     },
-    removeBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, args, context) => {
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: { bookId } } },
+          { $pull: { savedBooks: { bookId: args.bookId } } },
           { new: true }
         );
 
