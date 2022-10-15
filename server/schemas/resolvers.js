@@ -1,4 +1,4 @@
-const { AuthenticationError } = require("apollo-server-express");
+const { ApolloError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
 
@@ -13,7 +13,7 @@ module.exports = {
         return userData;
       }
 
-      throw new AuthenticationError("Not logged in");
+      throw new ApolloError("Not logged in");
     },
   },
   Mutation: {
@@ -31,13 +31,13 @@ module.exports = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new ApolloError("Incorrect credentials");
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new ApolloError("Incorrect credentials");
       }
 
       const token = signToken(user);
@@ -55,7 +55,7 @@ module.exports = {
         return updatedUser;
       }
 
-      throw new AuthenticationError("You need to be logged in!");
+      throw new ApolloError("You need to be logged in!");
     },
     removeBook: async (parent, args, context) => {
       if (context.user) {
@@ -68,7 +68,7 @@ module.exports = {
         return updatedUser;
       }
 
-      throw new AuthenticationError("You need to be logged in!");
+      throw new ApolloError("You need to be logged in!");
     },
   },
 };
