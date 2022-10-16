@@ -1,7 +1,7 @@
 {
   "name": "book-search",
   "version": "1.0.0",
-  "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
+  "description": "",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
@@ -14,13 +14,5 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^5.1.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ashlynn4567/Book-Search-Engine.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ashlynn4567/Book-Search-Engine/issues"
-  },
-  "homepage": "https://github.com/ashlynn4567/Book-Search-Engine#readme"
+  }
 }
