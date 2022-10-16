@@ -1,7 +1,7 @@
 {
-  "name": "book-search",
+  "name": "cs-book-search",
   "version": "1.0.0",
-  "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
+  "description": "",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
