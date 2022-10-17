@@ -1,7 +1,7 @@
 # cs-book-search
 
 ## Description 
-cs-book-search project is the Book Search Engine application using the MERN Stack which allow users to search the books by using API search from Google. This is full stack web aplication that demostrates skill sets used to refactor an original code using RESt APIs into GraphQL with Apollo.
+cs-book-search project is the Book Search Engine application using the MERN Stack which allow users to search the books by using API search from Google. This is full stack web aplication taht built using the MERN stack, with a React front end, MongoDB database, and Node.js/Express.js server and API to demostrates skill sets used to refactor fully functioning Google Books API search engine built with a RESTful API into GraphQL API built with Apollo Server.
 
 ## Table of Contents
 1. [Installation](#Installation)
